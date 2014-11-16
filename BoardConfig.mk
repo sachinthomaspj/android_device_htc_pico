@@ -171,7 +171,7 @@ HTTP := chrome
 TARGET_FORCE_CPU_UPLOAD := true
 
 # Skip building external/chromium_org
-PRODUCT_PREBUILT_WEBVIEWCHROMIUM := true
+PRODUCT_PREBUILT_WEBVIEWCHROMIUM := yes
 
 # FM Radio
 BOARD_HAVE_FM_RADIO := true
