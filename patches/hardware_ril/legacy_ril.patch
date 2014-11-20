@@ -1,0 +1,31 @@
+diff --git a/include/telephony/ril.h b/include/telephony/ril.h
+index 6f3338b..3ab4e24 100644
+--- a/include/telephony/ril.h
++++ b/include/telephony/ril.h
+@@ -47,7 +47,11 @@ extern "C" {
+ #endif
+ 
+ #define RIL_VERSION 10     /* Current version */
++#ifdef LEGACY_RIL
++#define RIL_VERSION_MIN 2
++#else
+ #define RIL_VERSION_MIN 6 /* Minimum RIL_VERSION supported */
++#endif
+ 
+ #define CDMA_ALPHA_INFO_BUFFER_LENGTH 64
+ #define CDMA_NUMBER_INFO_BUFFER_LENGTH 81
+diff --git a/libril/Android.mk b/libril/Android.mk
+index 2483fc6..6d4935e 100644
+--- a/libril/Android.mk
++++ b/libril/Android.mk
+@@ -25,6 +25,10 @@ endif
+ 
+ LOCAL_MODULE:= libril
+ 
++ifeq ($(BOARD_USES_LEGACY_RIL),true)
++LOCAL_CFLAGS += -DLEGACY_RIL
++endif
++
+ include $(BUILD_SHARED_LIBRARY)
+ 
+ 
