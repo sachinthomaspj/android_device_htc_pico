@@ -1,0 +1,95 @@
+diff --git a/libril/Android.mk b/libril/Android.mk
+index 2483fc6..df33425 100644
+--- a/libril/Android.mk
++++ b/libril/Android.mk
+@@ -19,6 +19,10 @@ LOCAL_SHARED_LIBRARIES := \
+ 
+ #LOCAL_CFLAGS := -DANDROID_MULTI_SIM -DDSDA_RILD1
+ 
++ifdef BOARD_USE_NEW_LIBRIL_HTC
++    LOCAL_CFLAGS += -DNEW_LIBRIL_HTC
++endif
++
+ ifeq ($(SIM_COUNT), 2)
+     LOCAL_CFLAGS += -DANDROID_SIM_COUNT_2
+ endif
+diff --git a/libril/ril.cpp b/libril/ril.cpp
+index feaf60f..20dd523 100644
+--- a/libril/ril.cpp
++++ b/libril/ril.cpp
+@@ -279,6 +279,8 @@ static void dispatchSimAuthentication(Parcel &p, RequestInfo *pRI);
+ static void dispatchDataProfile(Parcel &p, RequestInfo *pRI);
+ static int responseInts(Parcel &p, void *response, size_t responselen);
+ static int responseStrings(Parcel &p, void *response, size_t responselen);
++static int responseStringsNetworks(Parcel &p, void *response, size_t responselen);
++static int responseStrings(Parcel &p, void *response, size_t responselen, bool network_search);
+ static int responseString(Parcel &p, void *response, size_t responselen);
+ static int responseVoid(Parcel &p, void *response, size_t responselen);
+ static int responseCallList(Parcel &p, void *response, size_t responselen);
+@@ -2078,6 +2080,7 @@ responseInts(Parcel &p, void *response, size_t responselen) {
+     return 0;
+ }
+ 
++
+ /** response is a char **, pointing to an array of char *'s
+     The parcel will begin with the version */
+ static int responseStringsWithVersion(int version, Parcel &p, void *response, size_t responselen) {
+@@ -2087,6 +2090,15 @@ static int responseStringsWithVersion(int version, Parcel &p, void *response, si
+ 
+ /** response is a char **, pointing to an array of char *'s */
+ static int responseStrings(Parcel &p, void *response, size_t responselen) {
++    return responseStrings(p, response, responselen, false);
++}
++
++static int responseStringsNetworks(Parcel &p, void *response, size_t responselen) {
++    return responseStrings(p, response, responselen, true);
++}
++
++/** response is a char **, pointing to an array of char *'s */
++static int responseStrings(Parcel &p, void *response, size_t responselen, bool network_search) {
+     int numStrings;
+ 
+     if (response == NULL && responselen != 0) {
+@@ -2105,11 +2117,29 @@ static int responseStrings(Parcel &p, void *response, size_t responselen) {
+         char **p_cur = (char **) response;
+ 
+         numStrings = responselen / sizeof(char *);
++#ifdef NEW_LIBRIL_HTC
++        if (network_search == true) {
++            // we only want four entries for each network
++            p.writeInt32 (numStrings - (numStrings / 5));
++        } else {
++            p.writeInt32 (numStrings);
++        }
++        int sCount = 0;
++#else
+         p.writeInt32 (numStrings);
++#endif
+ 
+         /* each string*/
+         startResponse;
+         for (int i = 0 ; i < numStrings ; i++) {
++#ifdef NEW_LIBRIL_HTC
++            sCount++;
++            // ignore the fifth string that is returned by newer HTC libhtc_ril.so.
++            if (network_search == true && sCount % 5 == 0) {
++                sCount = 0;
++                continue;
++            }
++#endif
+             appendPrintBuf("%s%s,", printBuf, (char*)p_cur[i]);
+             writeStringToParcel (p, p_cur[i]);
+         }
+diff --git a/libril/ril_commands.h b/libril/ril_commands.h
+index 7c3af55..3200ce4 100644
+--- a/libril/ril_commands.h
++++ b/libril/ril_commands.h
+@@ -62,7 +62,7 @@
+     {RIL_REQUEST_QUERY_NETWORK_SELECTION_MODE, dispatchVoid, responseInts},
+     {RIL_REQUEST_SET_NETWORK_SELECTION_AUTOMATIC, dispatchVoid, responseVoid},
+     {RIL_REQUEST_SET_NETWORK_SELECTION_MANUAL, dispatchString, responseVoid},
+-    {RIL_REQUEST_QUERY_AVAILABLE_NETWORKS , dispatchVoid, responseStrings},
++    {RIL_REQUEST_QUERY_AVAILABLE_NETWORKS , dispatchVoid, responseStringsNetworks},
+     {RIL_REQUEST_DTMF_START, dispatchString, responseVoid},
+     {RIL_REQUEST_DTMF_STOP, dispatchVoid, responseVoid},
+     {RIL_REQUEST_BASEBAND_VERSION, dispatchVoid, responseString},
