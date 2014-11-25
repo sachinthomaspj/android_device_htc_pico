@@ -20,6 +20,9 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
 # Most specific first.
 $(call inherit-product, $(SRC_TARGET_DIR)/product/locales_full.mk)
 
+# Dalvik heap optimized for 512MB RAM
+$(call inherit-product, frameworks/native/build/phone-hdpi-512-dalvik-heap.mk)
+
 DEVICE_PACKAGE_OVERLAYS += device/htc/pico/overlay
 
 # Graphics 
@@ -272,12 +275,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.purgeable_assets=1 \
     ro.telephony.call_ring.delay=3000 \
     ro.config.low_ram=true \
-    dalvik.vm.heapstartsize=5m \
-    dalvik.vm.heapgrowthlimit=48m \
-    dalvik.vm.heapsize=64m \
-    dalvik.vm.heaptargetutilization=0.75 \
-    dalvik.vm.heapminfree=512k \
-    dalvik.vm.heapmaxfree=2m \
     ro.com.android.mobiledata=false \
     ro.com.android.dataroaming=false
 
