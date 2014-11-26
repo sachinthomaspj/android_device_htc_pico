@@ -120,6 +120,8 @@ dalvik.vm.execution-mode=int:jit
 dalvik.vm.verify-bytecode=false
 dalvik.vm.lockprof.threshold=500
 dalvik.vm.debug.alloc=0
+dalvik.vm.image-dex2oat-flags=--compiler-filter=verify-none
+dalvik.vm.dex2oat-flags=--compiler-filter=interpret-only
 
 # Misc
 ro.use_data_netmgrd=true
