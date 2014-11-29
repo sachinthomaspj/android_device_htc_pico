@@ -171,6 +171,16 @@ HTTP := chrome
 # ART
 MALLOC_IMPL := dlmalloc
 
+# Enable dex-preoptimization to speed up first boot sequence
+ifeq ($(HOST_OS),linux)
+  ifeq ($(TARGET_BUILD_VARIANT),userdebug)
+    ifeq ($(WITH_DEXPREOPT),)
+      WITH_DEXPREOPT := true
+    endif
+  endif
+endif
+DONT_DEXPREOPT_PREBUILTS := true
+
 # Use Cpu Upload path (webkit)
 TARGET_FORCE_CPU_UPLOAD := true
 
