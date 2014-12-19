@@ -28,6 +28,7 @@ import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.telephony.CellInfo;
 import android.telephony.Rlog;
+import android.telephony.SignalStrength
 
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
@@ -49,11 +50,33 @@ public class HTCQualcommRIL extends RIL implements CommandsInterface {
 
     public HTCQualcommRIL(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription, null);
+        mQANElements = 5;
     }
 
     public HTCQualcommRIL(Context context, int networkMode, int cdmaSubscription,
             Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
+        mQANElements = 5;
+    }
+
+    @Override
+    protected Object
+    responseSignalStrength(Parcel p) {
+        int numInts = 12;
+        int response[];
+
+        response = new int[numInts];
+        for (int i = 0 ; i < numInts ; i++) {
+            if (i > 6 && i < 12) {
+		//We dont have LTE so mark these as INVALID
+                response[i] = SignalStrength.INVALID;
+            } else {
+                response[i] = p.readInt();
+            }
+        }
+
+        return new SignalStrength(response[0], response[1], response[2], response[3], response[4], response[5],
+                response[6], response[7],response[8], response[9], response[10], response[11], true);
     }
 
     @Override
