@@ -28,7 +28,7 @@ import android.os.SystemProperties;
 import android.text.TextUtils;
 import android.telephony.CellInfo;
 import android.telephony.Rlog;
-import android.telephony.SignalStrength
+import android.telephony.SignalStrength;
 
 import com.android.internal.telephony.uicc.IccCardApplicationStatus;
 import com.android.internal.telephony.uicc.IccCardStatus;
@@ -37,7 +37,7 @@ import com.android.internal.telephony.dataconnection.DataCallResponse;
 
 import java.util.ArrayList;
 
-public class HTCQualcommRIL extends RIL implements CommandsInterface {
+public class HtcMsm7x27aRIL extends RIL implements CommandsInterface {
 
     private static final int RIL_UNSOL_ENTER_LPM = 1523;
     private static final int RIL_UNSOL_CDMA_3G_INDICATOR = 3009;
@@ -48,12 +48,12 @@ public class HTCQualcommRIL extends RIL implements CommandsInterface {
     private static final int RIL_UNSOL_RESPONSE_IMS_NETWORK_STATE_CHANGED = 21005;
     private static final int RIL_UNSOL_RESPONSE_DATA_NETWORK_STATE_CHANGED = 21007;
 
-    public HTCQualcommRIL(Context context, int networkMode, int cdmaSubscription) {
+    public HtcMsm7x27aRIL(Context context, int networkMode, int cdmaSubscription) {
         super(context, networkMode, cdmaSubscription, null);
         mQANElements = 5;
     }
 
-    public HTCQualcommRIL(Context context, int networkMode, int cdmaSubscription,
+    public HtcMsm7x27aRIL(Context context, int networkMode, int cdmaSubscription,
             Integer instanceId) {
         super(context, networkMode, cdmaSubscription, instanceId);
         mQANElements = 5;
