@@ -19,8 +19,8 @@ BOARD_VENDOR := htc
 
 TARGET_SPECIFIC_HEADER_PATH := $(LOCAL_PATH)/include
 
-TARGET_GLOBAL_CFLAGS += -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a5
-TARGET_GLOBAL_CPPFLAGS += -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a5
+TARGET_GLOBAL_CFLAGS += -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a9
+TARGET_GLOBAL_CPPFLAGS += -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a9
 TARGET_RELEASE_CPPFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 COMMON_GLOBAL_CFLAGS += -DQCOM_LEGACY_OMX
 COMMON_GLOBAL_CFLAGS += -DQCOM_HARDWARE
@@ -39,8 +39,8 @@ TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_ABI := armeabi-v7a
 TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_SMP := true
-TARGET_CPU_VARIANT := cortex-a5
-TARGET_ARCH_VARIANT_CPU := cortex-a5
+TARGET_CPU_VARIANT := cortex-a9
+TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_ARCH_LOWMEM := true
 ARCH_ARM_HAVE_TLS_REGISTER := true
 TARGET_BOOTLOADER_BOARD_NAME := pico
